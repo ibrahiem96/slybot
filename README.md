@@ -7,8 +7,8 @@
 
 # Table of Contents
 1. [Setup](#setup)
-2. [Usage](#Usage)
-3. [Methods](#Methods)
+2. [Usage](#usage)
+3. [Methods](#methods)
 
 
 ##### What works in this version
