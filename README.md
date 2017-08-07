@@ -69,7 +69,7 @@ If you wish to install and run the slackbot using Linux Centos, use the followin
 ```bash
 sudo pip install -r requirements.txt
 ```
-2. Then, from the terminal, run the following **(NOTE: If you are using the docker quickstart terminal then you dont need to enter the first command)**:
+2. Then, from the terminal, run the following:
 ```bash
 sudo service docker start
 sudo docker build -t slackbot . #this should only be done the frist time around. If you want to start the bot again, you do not need to enter this command
