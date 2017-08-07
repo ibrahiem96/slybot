@@ -1,0 +1,4 @@
+slacker
+requests
+websocket
+websocket-client
