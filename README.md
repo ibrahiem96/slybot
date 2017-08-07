@@ -1,5 +1,15 @@
+
+
+
 # Getting Started with Slython Slackbot API
 &nbsp;&nbsp; Slython is a slackbot that builds upon the slacker python library to connect a bot to a slack team. It also connects with the RTM API to get real time events and report on those events.
+
+
+# Table of Contents
+1. [Setup](#Setup)
+2. [Usage](#Usage)
+3. [Methods](#Methods)
+
 
 ##### What works in this version
 &nbsp;&nbsp; As of right now Slython has the following functionality:
