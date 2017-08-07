@@ -6,7 +6,7 @@
 
 
 # Table of Contents
-1. [Setup](#Setup)
+1. [Setup](#setup)
 2. [Usage](#Usage)
 3. [Methods](#Methods)
 
