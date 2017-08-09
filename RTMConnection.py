@@ -45,41 +45,41 @@ if rep['type'] == 'hello':
 # reports message/takes action if file uploaded meets certain criteria
 def report_file_shared(data):
 
-    keywords = ['performance','ratings','production','fitch','collaboration']
+    keywords = ['performance', 'ratings', 'production', 'fitch', 'collaboration']
 
     file_id = data['file_id']
-    file = get_file_obj(file_id)
+    file_obj = get_file_obj(file_id)
 
-    keyword_in_file = filter(lambda x: x in file['file']['name'], keywords)
+    keyword_in_file = filter(lambda x: x in file_obj['file']['name'], keywords)
 
     # if file has already been documented, then skip it
-    if file['file']['name'] in session_files:
+    if file_obj['file']['name'] in session_files:
         print ('ERROR: FILE ALREADY HANDLED')
         return
 
     # else, check if it is over 25 MB OR if it contains certain keywords
     # if either case matches, alert channel
     else:
-        if file['file']['size'] > 25000000:
+        if file_obj['file']['size'] > 25000000:
             payload = json.dumps(message_builder("File Size Larger Than 25MB",
-                                 "File ID: " + file['file']['id'] + "\n File Name: " + file['file']['name'] +
-                                                 "\n User ID: " + file['file']['user'],
-                                                 get_user_real_name(file['file']['user'])))
+                                 "File ID: " + file_obj['file']['id'] + "\n File Name: " + file_obj['file']['name'] +
+                                                 "\n User ID: " + file_obj['file']['user'],
+                                                 get_user_real_name(file_obj['file']['user'])))
             requests.post(WEB_HOOK, data=payload)
 
             # TODO: add message to admin channel
 
         if keyword_in_file:
             payload = json.dumps(message_builder("File found with keyword: " + ''.join(keyword_in_file),
-                                                 "File ID: " + file['file'][
-                                                     'id'] + "\n File Name: " + file['file']['name'] + "\n User ID: " +
-                                                 file['file']['user'],
-                                                 get_user_real_name(file['file']['user'])))
+                                                 "File ID: " + file_obj['file'][
+                                                     'id'] + "\n File Name: " + file_obj['file']['name'] +
+                                                 "\n User ID: " + file_obj['file']['user'],
+                                                 get_user_real_name(file_obj['file']['user'])))
             requests.post(WEB_HOOK, data=payload)
 
         # add file name to list which will be cross-referenced next time a file is uploaded
         # this is to detect any duplication
-        session_files.append(file['file']['name'])
+        session_files.append(file_obj['file']['name'])
 
 
 # gets user info based on user ID
@@ -89,7 +89,7 @@ def report_if_fitch_user(data):
     user_obj = get_user_obj(channel_obj['channel']['creator'])
 
     if 'fitchratings' in user_obj['user']['profile']['email']:
-        post_message_from_listener('channel created', channel_obj)
+        post_message_from_listener('channel_created', channel_obj)
         post_simple_message(channels.bot_testing_arena, 'Channel Created By Fitch User')
         post_simple_message(channels.bot_testing_arena, 'User Email: ' + user_obj['user']['profile']['email'])
 
@@ -128,7 +128,7 @@ def on_channel_created(data):
 
 
 def post_message_from_listener(event_type, data):
-    if event_type is 'channel created':
+    if event_type is 'channel_created':
         payload = json.dumps(message_builder("Channel Created",
                                              "Channel ID: " + data['channel']['id'] + "\n Channel Name: " +
                                              data['channel']['name'] + "\n Creator ID: " +
@@ -136,7 +136,7 @@ def post_message_from_listener(event_type, data):
                                              get_user_real_name(data['channel']['creator'])))
         requests.post(WEB_HOOK, data=payload)
 
-    elif event_type is 'user created':
+    elif event_type is 'user_created':
         payload = json.dumps(message_builder("User Created",
                                              "User ID: " + data['user']['id'] + "\n User Name: " +
                                              data['user']['profile']['name'] + "\n User Email: " +
@@ -171,5 +171,7 @@ while True:
     except Exception as e:
         print 'exception: ' + e.message
 
-    print(res)
+    # The below statement commented out but can be uncommented for logging/debugging purposes
+    # It prints out a log of all events occurring to the console
+    #print(res)
 # # # - - - - - - - - - - END MAIN RTM LOOP - - - - - - - - - - # # #
