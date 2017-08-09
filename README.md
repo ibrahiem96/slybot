@@ -60,7 +60,7 @@ pip install -r requirements.txt
 ```
 2. Then, from the terminal, run the following:
 ```bash
-docker build -t slackbot . #this should only be done the frist time around. If you want to start the bot again, you do not need to enter this command
+docker build -t slackbot . #this should only be done the frist time around, and then only if any changes have been made to the source code.
 docker run slackbot
 ```
 3. If you want to stop the docker image, enter the following:
@@ -82,7 +82,7 @@ sudo pip install -r requirements.txt
 2. Then, from the terminal, run the following:
 ```bash
 sudo service docker start
-sudo docker build -t slackbot . #this should only be done the frist time around. If you want to start the bot again, you do not need to enter this command
+sudo docker build -t slackbot . #this should only be done the frist time around, and then only if any changes have been made to the source code.
 sudo docker run slackbot
 ```
 3. If you want to stop the docker image, you can either give the Ctrl-C command or open a new terminal window and do the following:
@@ -126,8 +126,7 @@ do this as well, by doing that anywhere before the RTM loop.
 ###### Immutable
 - ```message_builder(title, summary, author)```: Takes three strings (the title of the message, the summary, and the author)
 and returns a json object.
-- ```event_handler(data_, res_)```: Takes in json rtm stream and data runs handler methods. This method is only
-and should only be run in the MAIN RTM LOOP.
+
 ###### Mutable
 - ```post_simple_message(channel_name, message)```: Takes the channel name (as a string) and the message string to be sent
 and posts the message on the desired channel.
@@ -138,6 +137,8 @@ and posts the message on the desired channel.
 - ```on_channel_created(data)```: Takes the RTM json stream data and returns channel json object
 - ```post_message_from_listener(event_type, data)```: Takes in the type of event
 (channel created, user created, etc) and the corresponding json data and posts message about event.
+- ```event_handler(data_, res_)```: Takes in json rtm stream and data runs handler methods. This method is only
+and should only be run in the MAIN RTM LOOP.
 
 
 
