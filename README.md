@@ -60,8 +60,8 @@ pip install -r requirements.txt
 ```
 2. Then, from the terminal, run the following:
 ```bash
-sudo docker build -t slackbot . #this should only be done the frist time around. If you want to start the bot again, you do not need to enter this command
-sudo docker run slackbot
+docker build -t slackbot . #this should only be done the frist time around. If you want to start the bot again, you do not need to enter this command
+docker run slackbot
 ```
 3. If you want to stop the docker image, enter the following:
 ```bash
