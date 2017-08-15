@@ -1,12 +1,17 @@
 import json
 import requests
+import sys
 from slacker import Slacker
 from websocket import create_connection
 
-from BotActions.settings import API_TOKEN, WEB_HOOK, ChannelsToPostTo
+from BotActions.settings import API_TOKEN, WEB_HOOK, BOT_NAME, ChannelsToPostTo
 
 slack = Slacker(API_TOKEN)
 channels = ChannelsToPostTo()
+
+# current channel to which all messages will be posted
+current_channel = channels.bot_testing_arena
+bot_id = slack.users.get_user_id(BOT_NAME)
 
 session = slack.rtm.start()
 url = session.body['url']
@@ -34,9 +39,12 @@ def message_builder(title, summary, author):
 # checks if connection with RTM API is successful
 if rep['type'] == 'hello':
     print('connected successfully')
-    payload = json.dumps(message_builder("Bot Connection",
-                                         "Bot Connected Successfully",
-                                         "ibrahiembot"))
+    payload = json.dumps(message_builder("Bot Connected Successfully",
+                                         "Slybot listens to programmed events and will give you feedback based on"
+                                         "certain events occurring."
+                                         " If you want the slackbot to carry out a command, simply message the bot with"
+                                         " its handle, i.e: @botname hello",
+                                         BOT_NAME))
     requests.post(WEB_HOOK, data=payload)
 
 
@@ -60,6 +68,7 @@ def report_file_shared(data):
     # else, check if it is over 25 MB OR if it contains certain keywords
     # if either case matches, alert channel
     else:
+        # if file > 25 MB post a message
         if file_obj['file']['size'] > 25000000:
             payload = json.dumps(message_builder("File Size Larger Than 25MB",
                                  "File ID: " + file_obj['file']['id'] + "\n File Name: " + file_obj['file']['name'] +
@@ -69,6 +78,7 @@ def report_file_shared(data):
 
             # TODO: add message to admin channel
 
+        # if the keyword does exist in the file then post a message
         if keyword_in_file:
             payload = json.dumps(message_builder("File found with keyword: " + ''.join(keyword_in_file),
                                                  "File ID: " + file_obj['file'][
@@ -90,8 +100,8 @@ def report_if_fitch_user(data):
 
     if 'fitchratings' in user_obj['user']['profile']['email']:
         post_message_from_listener('channel_created', channel_obj)
-        post_simple_message(channels.bot_testing_arena, 'Channel Created By Fitch User')
-        post_simple_message(channels.bot_testing_arena, 'User Email: ' + user_obj['user']['profile']['email'])
+        post_simple_message(current_channel, 'Channel Created By Fitch User')
+        post_simple_message(current_channel, 'User Email: ' + user_obj['user']['profile']['email'])
 
 # - - - - - - - - - - - - - - - - - - - - - - END CUSTOM METHODS - - - - - - - - - - - - - - - - - - - - - - #
 
@@ -127,6 +137,29 @@ def on_channel_created(data):
     return channel_obj
 
 
+def command_handler(data):
+    message = data['text']
+
+    if bot_id in message:
+
+        if "disconnect" in message:
+            slack.chat.post_message(current_channel, "Goodbye!")
+            print 'disconnecting...'
+            sys.exit()
+
+        elif "hello" in message:
+            slack.chat.post_message(current_channel, "Hello! Enter in the command 'help' to see what I can do for you")
+
+        elif "help" in message:
+            payload = json.dumps(message_builder("Commands",
+                                                 "disconnect: disconnects the specified bot from slack\n"
+                                                 "hello: responds with hello", BOT_NAME))
+            requests.post(WEB_HOOK, data=payload)
+
+        else:
+            slack.chat.post_message(current_channel, "Command not understood")
+
+
 def post_message_from_listener(event_type, data):
     if event_type is 'channel_created':
         payload = json.dumps(message_builder("Channel Created",
@@ -159,6 +192,9 @@ def event_handler(data_, res_):
     if "file_shared" in res_:
         report_file_shared(data_)
 
+    # calls command handler if a message is entered in slack
+    if "message" in res_:
+        command_handler(data_)
 
 # # # - - - - - - - - - - MAIN RTM LOOP - - - - - - - - - - # # #
 while True:
@@ -173,5 +209,5 @@ while True:
 
     # The below statement commented out but can be uncommented for logging/debugging purposes
     # It prints out a log of all events occurring to the console
-    #print(res)
+    # print(res)
 # # # - - - - - - - - - - END MAIN RTM LOOP - - - - - - - - - - # # #
