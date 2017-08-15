@@ -123,11 +123,8 @@ If you want to complete a simple action such as posting a message, without invol
 do this as well, by doing that anywhere before the RTM loop.
 
 ##### Methods
-###### Immutable
 - ```message_builder(title, summary, author)```: Takes three strings (the title of the message, the summary, and the author)
 and returns a json object.
-
-###### Mutable
 - ```post_simple_message(channel_name, message)```: Takes the channel name (as a string) and the message string to be sent
 and posts the message on the desired channel.
 - ```get_channel(channelid)```: Takes the channel id and returns the channel json object.
@@ -139,6 +136,7 @@ and posts the message on the desired channel.
 (channel created, user created, etc) and the corresponding json data and posts message about event.
 - ```event_handler(data_, res_)```: Takes in json rtm stream and data runs handler methods. This method is only
 and should only be run in the MAIN RTM LOOP.
+- ```command_handler(data)```: Takes RTM JSON stream data and carries out command specified
 
 
 
