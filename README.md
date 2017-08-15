@@ -19,13 +19,11 @@
 4. Reports if a file uploaded is greater than 25MB
 5. Can run from a docker file
 6. Integrated with Webhook URL to provide pretty-formatted JSON messages in channels.
+7. Command handler (slackbot can listen to commands and carry them out)
 
 ##### Goals for the future
-1. Add handler for when rtm disconnects (to automatically reconnect)
-2. Determine if slack notifications/settings are accessible by bot; if so, subscribe to and interact with notification
-3. Command handler (allows direct interaction with the bot from the user. i.e. if a user were to say "get me a list of all active users", the bot would then comply)
-4. Write client code with wrapper functions
-5. Setup EC2 Instance from which to run the dockerfile
+1. Determine if slack notifications/settings are accessible by bot; if so, subscribe to and interact with notification
+2. Write client code with wrapper functions
 
 
 ## Setup
@@ -136,7 +134,7 @@ and posts the message on the desired channel.
 (channel created, user created, etc) and the corresponding json data and posts message about event.
 - ```event_handler(data_, res_)```: Takes in json rtm stream and data runs handler methods. This method is only
 and should only be run in the MAIN RTM LOOP.
-- ```command_handler(data)```: Takes RTM JSON stream data and carries out command specified
+- ```command_handler(data)```: Takes RTM JSON stream data and carries out command specified.
 
 
 
