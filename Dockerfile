@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 ENV NAME World
 
 # Run app.py when the container launches
-CMD ["python", "RTMConnection.py"]
+CMD ["python", "bot.py"]

@@ -19,13 +19,11 @@
 4. Reports if a file uploaded is greater than 25MB
 5. Can run from a docker file
 6. Integrated with Webhook URL to provide pretty-formatted JSON messages in channels.
+7. Command handler (slackbot can listen to commands and carry them out)
 
 ##### Goals for the future
-1. Add handler for when rtm disconnects (to automatically reconnect)
-2. Determine if slack notifications/settings are accessible by bot; if so, subscribe to and interact with notification
-3. Command handler (allows direct interaction with the bot from the user. i.e. if a user were to say "get me a list of all active users", the bot would then comply)
-4. Write client code with wrapper functions
-5. Setup EC2 Instance from which to run the dockerfile
+1. Determine if slack notifications/settings are accessible by bot; if so, subscribe to and interact with notification
+2. Write client code with wrapper functions
 
 
 ## Setup
@@ -33,6 +31,7 @@
 1. Python 2.7
 
 ##### Configuration
+**NOTE: Steps 2-3 are not necessary if you are using the bitbucket repository**
 1. Clone the repo and go inside the slython-api directory
 2. In **settings.py** replace the value for API_TOKEN with the value for your bot token. If you need help creating a bot and its token, [use this guide](https://imperiallabs.github.io/quick_landing.html#get-a-key).
 3. Replace the value for WEB_HOOK with your slackbot webhook url (this is also in **settings.py**). If you need assistance
@@ -123,11 +122,8 @@ If you want to complete a simple action such as posting a message, without invol
 do this as well, by doing that anywhere before the RTM loop.
 
 ##### Methods
-###### Immutable
 - ```message_builder(title, summary, author)```: Takes three strings (the title of the message, the summary, and the author)
 and returns a json object.
-
-###### Mutable
 - ```post_simple_message(channel_name, message)```: Takes the channel name (as a string) and the message string to be sent
 and posts the message on the desired channel.
 - ```get_channel(channelid)```: Takes the channel id and returns the channel json object.
@@ -139,8 +135,4 @@ and posts the message on the desired channel.
 (channel created, user created, etc) and the corresponding json data and posts message about event.
 - ```event_handler(data_, res_)```: Takes in json rtm stream and data runs handler methods. This method is only
 and should only be run in the MAIN RTM LOOP.
-
-
-
-
- 
+- ```command_handler(data)```: Takes RTM JSON stream data and carries out command specified.
