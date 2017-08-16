@@ -136,11 +136,3 @@ and posts the message on the desired channel.
 - ```event_handler(data_, res_)```: Takes in json rtm stream and data runs handler methods. This method is only
 and should only be run in the MAIN RTM LOOP.
 - ```command_handler(data)```: Takes RTM JSON stream data and carries out command specified.
-<<<<<<< HEAD
-=======
-
-
-
-
- 
->>>>>>> 3e7060b55d261e0d93ed81bc78e524740e26e57d
