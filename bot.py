@@ -1,6 +1,3 @@
-import json
-import requests
-
 from BotConnection import BotController as controller
 
 SESSION_FILES = []
