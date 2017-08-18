@@ -26,20 +26,22 @@ def report_file_shared(data):
     else:
         # if file > 25 MB post a message
         if file_obj['file']['size'] > 25000000:
-            payload = json.dumps(controller.message_builder("File Size Larger Than 25MB",
-                                                            "File ID: " + file_obj['file']['id'] + "\n File Name: " + file_obj['file']['name'] +
-                                                            "\n User ID: " + file_obj['file']['user'],
-                                                            controller.get_user_real_name(file_obj['file']['user'])))
+            payload = controller.message_builder("File Size Larger Than 25MB",
+                                                 "File ID: " + file_obj['file']['id'] +
+                                                 "\n File Name: " + file_obj['file']['name'] +
+                                                 "\n User ID: " + file_obj['file']['user'],
+                                                 controller.get_user_real_name(file_obj['file']['user']))
             requests.post(controller.WEB_HOOK, data=payload)
 
             # TODO: add message to admin channel
 
         # if the keyword does exist in the file then post a message
         if keyword_in_file:
-            payload = json.dumps(controller.message_builder("File found with keyword: " + ''.join(keyword_in_file),
-                                                            "File ID: " + file_obj['file']['id'] + "\n File Name: " + file_obj['file']['name'] +
-                                                            "\n User ID: " + file_obj['file']['user'],
-                                                            controller.get_user_real_name(file_obj['file']['user'])))
+            payload = controller.message_builder("File found with keyword: " + ''.join(keyword_in_file),
+                                                 "File ID: " + file_obj['file']['id'] +
+                                                 "\n File Name: " + file_obj['file']['name'] +
+                                                 "\n User ID: " + file_obj['file']['user'],
+                                                 controller.get_user_real_name(file_obj['file']['user']))
             requests.post(controller.WEB_HOOK, data=payload)
 
         # add file name to list which will be cross-referenced next time a file is uploaded
@@ -71,10 +73,6 @@ def event_handler(data_, res_):
     if "file_shared" in res_:
         report_file_shared(data_)
 
-    # calls command handler if a message is entered in slack
-    if "message" in res_:
-        controller.command_handler(data_)
-
 # # # - - - - - - - - - - MAIN RTM LOOP - - - - - - - - - - # # #
 
 rtm_stream = controller.get_connection_stream()
@@ -85,6 +83,7 @@ while True:
         data = json.loads(res)
 
         event_handler(data, res)
+        controller.command_listener(data, res)
 
     except Exception as e:
         print 'exception: ' + e.message

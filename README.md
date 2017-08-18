@@ -20,34 +20,40 @@
 5. Can run from a docker file
 6. Integrated with Webhook URL to provide pretty-formatted JSON messages in channels.
 7. Command handler (slackbot can listen to commands and carry them out)
+8. Client code
 
 ##### Goals for the future
 1. Determine if slack notifications/settings are accessible by bot; if so, subscribe to and interact with notification
-2. Write client code with wrapper functions
-
+2. Events should be handled outside of client code
+3. Add interaction with multiple channels
 
 ## Setup
 ##### Requirements
 1. Python 2.7
 
 ##### Configuration
-**NOTE: Steps 2-3 are not necessary if you are using the bitbucket repository**
-1. Clone the repo and go inside the slython-api directory
-2. In **settings.py** replace the value for API_TOKEN with the value for your bot token. If you need help creating a bot and its token, [use this guide](https://imperiallabs.github.io/quick_landing.html#get-a-key).
-3. Replace the value for WEB_HOOK with your slackbot webhook url (this is also in **settings.py**). If you need assistance
-   in setting up an incoming webhook URL, [go here]( https://slack.com/apps/manage/custom-integrations), and click on the incoming webhooks option.
-4. Add in any other channels you with to communicate with, as done below (also in **settings.py**):
-```python
-    class ChannelsToPostTo:
-    def __init__(self):
-        self.bot_testing_arena = '#bot_testing_arena'
-        self.testing_channel54 = '#testingchannel54'
+**NOTE: Step 2-4 are not necessary if you are using the bitbucket repository (the environment variables are added to the
+bamboo build plan**
+1. Clone the repo and go inside the directory
+2. Enter the following commands
+```bash
+export API_TOKEN="<api token here>"
 ```
+If you need help creating a bot and its token, [use this guide](https://imperiallabs.github.io/quick_landing.html#get-a-key).
+```bash
+export WEB_HOOK="<web hook url here>"
+```
+If you need assistance in setting up an incoming webhook URL, [go here]( https://slack.com/apps/manage/custom-integrations), and click on the incoming webhooks option.
+```bash
+export BOT_NAME="<bot username>" # this is the same username you registered the bot with
+export CHANNEL_NAME="<channel name here>" # obviously the bot can interact with any channel, but this here is the channel that it is invited to.
+```
+
 ##### Running Locally (without Docker)
 
 1. Once setup is configured click run if you are using PyCharm or some other Python IDE. If you are running from the command line simply enter the following:
  ```bash
- python RTMConnection.py
+ python bot.py
  ```
 
 ##### Running with Docker (Windows + Docker Toolbox)
@@ -90,40 +96,98 @@ sudo service docker stop
 ```
 
 ## Usage
-#### Event Handling
-Create an action for the slackbot to listen to. In this case, we will listen to the rtm api to see when a channel
-is created and then check if that channel was created by a Fitch user **(Notice that we use the on_channel_created() method here)**:
+
+Below you will find a basic setup of a bot. Everything contained in that code is necessary for a slackbot instance
+to run. Once the bot connects to the rtm stream, it is configured to listen to any commands you may give to it.
+Of course, you can add more configurations to make your bot do anything you want.
+
+``` python
+from BotConnection import BotController as controller
+
+# reads the json data stream and handles events
+def event_handler(data_, res_):
+    // handle events
+
+# # # - - - - - - - - - - MAIN RTM LOOP - - - - - - - - - - # # #
+
+rtm_stream = controller.get_connection_stream()
+
+while True:
+    try:
+        res = rtm_stream.recv()
+        data = json.loads(res)
+
+        event_handler(data, res)
+        controller.command_listener(data, res)
+
+    except Exception as e:
+        print 'exception: ' + e.message
+
+    # The below statement commented out but can be uncommented for logging/debugging purposes
+    # It prints out a log of all events occurring to the console
+    # print(res)
+# # # - - - - - - - - - - END MAIN RTM LOOP - - - - - - - - - - # # #
+
+```
+
+
+Below, we have a fuller example, showing how custom integrations can be added to the slackbot using an event handler. Here
+we show an example of how the slackbot can alert a channel when another channel is created. Moreover, it can also
+let us know whether or not the user who created the channel is a Fitch member:
+
 ```python
+from BotConnection import BotController as controller
+
+# - - - - - - - - - - - - - - - - - - - - - - - CUSTOM METHODS - - - - - - - - - - - - - - - - - - - - - - - #
+
 # gets user info based on user ID
 def report_if_fitch_user(data):
 
-    channel_obj = on_channel_created(data)
-    user_obj = get_user_obj(channel_obj['channel']['creator'])
+    channel_obj = controller.on_channel_created(data)
+    user_obj = controller.get_user_obj(channel_obj['channel']['creator'])
 
     if 'fitchratings' in user_obj['user']['profile']['email']:
-        post_message_from_listener('channel created', channel_obj)
-        post_simple_message('#bot_testing_arena', 'Channel Created By Fitch User')
-        post_simple_message('#bot_testing_arena', 'User Email: ' + user_obj['user']['profile']['email'])
-```
+        controller.post_message_from_listener('channel_created', channel_obj)
+        controller.post_simple_message(controller.CHANNEL, 'Channel Created By Fitch User')
+        controller.post_simple_message(controller.CHANNEL, 'User Email: ' + user_obj['user']['profile']['email'])
 
-Then we make sure that this method is being called in our event_handler method:
-```python
+# - - - - - - - - - - - - - - - - - - - - - - END CUSTOM METHODS - - - - - - - - - - - - - - - - - - - - - - #
+
+
 # reads the json data stream and handles events
 def event_handler(data_, res_):
     # alerts channel if another channel is created
     if "channel_created" in res_:
         report_if_fitch_user(data_)
+
+
+# # # - - - - - - - - - - MAIN RTM LOOP - - - - - - - - - - # # #
+
+rtm_stream = controller.get_connection_stream()
+
+while True:
+    try:
+        res = rtm_stream.recv()
+        data = json.loads(res)
+
+        event_handler(data, res)
+        controller.command_listener(data, res)
+
+    except Exception as e:
+        print 'exception: ' + e.message
+
+    # The below statement commented out but can be uncommented for logging/debugging purposes
+    # It prints out a log of all events occurring to the console
+    # print(res)
+# # # - - - - - - - - - - END MAIN RTM LOOP - - - - - - - - - - # # #
 ```
 
-The event handler is set to run always so you do not need to worry about that.
 
-#### Simple Actions
-If you want to complete a simple action such as posting a message, without involving the event handler, you can
-do this as well, by doing that anywhere before the RTM loop.
 
 ##### Methods
+- ```get_connection_stream()```: connects the bot to the RTM api
 - ```message_builder(title, summary, author)```: Takes three strings (the title of the message, the summary, and the author)
-and returns a json object.
+and returns a json dump.
 - ```post_simple_message(channel_name, message)```: Takes the channel name (as a string) and the message string to be sent
 and posts the message on the desired channel.
 - ```get_channel(channelid)```: Takes the channel id and returns the channel json object.
@@ -131,8 +195,7 @@ and posts the message on the desired channel.
 - ```get_user_real_name(userid)```: Takes the user id and returns the real full name of the user as a string.
 - ```get_file_obj(fileid)```: Takes the file id and returns the file json object.
 - ```on_channel_created(data)```: Takes the RTM json stream data and returns channel json object
+- ```on_file_shared(data)```: Takes the RTM json stream and returns file json object
 - ```post_message_from_listener(event_type, data)```: Takes in the type of event
 (channel created, user created, etc) and the corresponding json data and posts message about event.
-- ```event_handler(data_, res_)```: Takes in json rtm stream and data runs handler methods. This method is only
-and should only be run in the MAIN RTM LOOP.
 - ```command_handler(data)```: Takes RTM JSON stream data and carries out command specified.
