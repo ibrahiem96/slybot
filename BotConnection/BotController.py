@@ -130,6 +130,13 @@ def post_message_from_listener(event_type, data):
                                   get_user_real_name(data['channel']['creator']))
         requests.post(WEB_HOOK, data=payload)
 
+    elif event_type is 'file_shared':
+        payload = message_builder("File Shared",
+                                  "File ID: " + data['file']['id'] + "\n File Name: " +
+                                  data['file']['name'],
+                                  get_user_real_name(data['channel']['creator']))
+        requests.post(WEB_HOOK, data=payload)
+
     else:
         print ('invalid event type')
 
