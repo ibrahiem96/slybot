@@ -134,7 +134,7 @@ def post_message_from_listener(event_type, data):
         payload = message_builder("File Shared",
                                   "File ID: " + data['file']['id'] + "\n File Name: " +
                                   data['file']['name'],
-                                  get_user_real_name(data['channel']['creator']))
+                                  get_user_real_name(data['file']['user']))
         requests.post(WEB_HOOK, data=payload)
 
     else:
