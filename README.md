@@ -48,6 +48,7 @@ If you need assistance in setting up an incoming webhook URL, [go here]( https:/
 export BOT_NAME="<bot username>" # this is the same username you registered the bot with
 export CHANNEL_NAME="<channel name here>" # obviously the bot can interact with any channel, but this here is the channel that it is invited to.
 ```
+3. Add any libraries you are going to use to the requirements.txt file
 
 ##### Running Locally (without Docker)
 
