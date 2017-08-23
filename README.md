@@ -6,8 +6,8 @@
 
 
 # Table of Contents
-* [Setup](#setup)
- * [Configuration](#configuration)
+1. [Setup](#setup)
+  1a. [Configuration](#configuration)
 2. [Usage](#usage)
 3. [Methods](#methods)
 
