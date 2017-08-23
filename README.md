@@ -9,7 +9,6 @@
 * [Setup](#setup)
   * [Requirements](#requirements)
   * [Configuration](#configuration)
-  * [Running](#running)
 * [Usage](#usage)
 * [Methods](#methods)
 
