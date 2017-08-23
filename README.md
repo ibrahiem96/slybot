@@ -7,7 +7,10 @@
 
 # Table of Contents
 * [Setup](#setup)
+  * [Requirements](#requirements)
   * [Configuration](#configuration)
+  * [Running Locally](#running locally)
+  * [Running With Docker](#running with docker)
 * [Usage](#usage)
 * [Methods](#methods)
 
@@ -31,6 +34,8 @@
 ## Setup
 ##### Requirements
 1. Python 2.7
+2. Docker
+3. Slackbot Token and Webhook URL
 
 ##### Configuration
 **NOTE: Step 2-4 are not necessary if you are using the bitbucket repository (the environment variables are added to the
