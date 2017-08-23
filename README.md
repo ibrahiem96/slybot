@@ -6,10 +6,10 @@
 
 
 # Table of Contents
-1. [Setup](#setup)
-  1a. [Configuration](#configuration)
-2. [Usage](#usage)
-3. [Methods](#methods)
+* [Setup](#setup)
+  * [Configuration](#configuration)
+* [Usage](#usage)
+* [Methods](#methods)
 
 
 ##### What works in this version
