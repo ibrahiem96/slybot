@@ -111,7 +111,7 @@ from BotConnection import BotController as controller
 
 # reads the json data stream and handles events
 def event_handler(data_, res_):
-    // handle events
+    # handle events
 
 # # # - - - - - - - - - - MAIN RTM LOOP - - - - - - - - - - # # #
 
