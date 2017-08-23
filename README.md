@@ -9,7 +9,7 @@
 * [Setup](#setup)
   * [Requirements](#requirements)
   * [Configuration](#configuration)
-  * [Running Locally](#running)
+  * [Running Locally](#running%20locally)
   * [Running With Docker](#(windows))
 * [Usage](#usage)
 * [Methods](#methods)
