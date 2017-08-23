@@ -1,7 +1,5 @@
 from BotConnection import BotController as controller
 
-SESSION_FILES = []
-
 
 # - - - - - - - - - - - - - - - - - - - - - - CUSTOM METHODS - - - - - - - - - - - - - - - - - - - - - - #
 
