@@ -9,8 +9,8 @@
 * [Setup](#setup)
   * [Requirements](#requirements)
   * [Configuration](#configuration)
-  * [Running Locally](#running locally)
-  * [Running With Docker](#running with docker)
+  * [Running Locally](#running)
+  * [Running With Docker](#(windows))
 * [Usage](#usage)
 * [Methods](#methods)
 
@@ -63,7 +63,7 @@ export CHANNEL_NAME="<channel name here>" # obviously the bot can interact with 
  python bot.py
  ```
 
-##### Running with Docker (Windows + Docker Toolbox)
+##### (Windows) Running with Docker
 If you wish to install and run the slackbot using DockerToolbox on Windows, use the following steps:
 
 1. From the command prompt or terminal run the following inside the slython-api directory:
@@ -84,7 +84,7 @@ Note down the container id (usually a string of chars and numbers)
 docker stop <container-id>
 ```
 
-##### Running with Docker (Linux Centos)
+##### (Linux) Running with Docker
 If you wish to install and run the slackbot using Linux Centos, use the following steps:
 
 1. From the command prompt or terminal run the following inside the slython-api directory:
