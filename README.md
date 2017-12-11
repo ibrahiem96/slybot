@@ -70,7 +70,7 @@ pip install -r requirements.txt
 ```
 2. Then, from the terminal, run the following:
 ```bash
-docker build -t slackbot . #this should only be done the frist time around, and then only if any changes have been made to the source code.
+docker build -t slackbot . #this should only be done the frist time around, and then only if any changes have been made to the dockerfile.
 docker run slackbot
 ```
 3. If you want to stop the docker image, enter the following:
@@ -92,7 +92,7 @@ sudo pip install -r requirements.txt
 2. Then, from the terminal, run the following:
 ```bash
 sudo service docker start
-sudo docker build -t slackbot . #this should only be done the frist time around, and then only if any changes have been made to the source code.
+sudo docker build -t slackbot . #this should only be done the frist time around, and then only if any changes have been made to the dockerfile.
 sudo docker run slackbot
 ```
 3. If you want to stop the docker image, you can either give the Ctrl-C command or open a new terminal window and do the following:
